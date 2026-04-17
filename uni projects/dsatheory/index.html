@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DSA Assignment | M.Ali Zubair</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/framer-motion@10.16.4/dist/framer-motion.js"></script>
+    <style>
+        :root {
+            --deep-ink: #0a0a0c;
+            --slate-border: #1d1d21;
+            --accent-blue: #3b82f6;
+            --glass: rgba(255, 255, 255, 0.03);
+        }
+
+        body {
+            background-color: var(--deep-ink);
+            color: #d1d1d1;
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        .mono { font-family: 'JetBrains Mono', monospace; }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--deep-ink); }
+        ::-webkit-scrollbar-thumb { background: #2d2d35; border-radius: 10px; }
+
+        /* Glassmorphism & Depth */
+        .glass-card {
+            background: var(--glass);
+            border: 1px solid var(--slate-border);
+            backdrop-filter: blur(12px);
+            border-radius: 8px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .glass-card:hover {
+            border-color: #33333a;
+            background: rgba(255, 255, 255, 0.05);
+            transform: translateY(-2px);
+        }
+
+        /* Typography Refinements */
+        h1, h2, h3 { color: #ffffff; letter-spacing: -0.02em; }
+        
+        .section-tag {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--accent-blue);
+            font-weight: 700;
+        }
+
+        /* Syntax Highlighting Vibe */
+        pre {
+            background: #000000 !important;
+            border-left: 2px solid var(--accent-blue);
+            overflow-x: auto;
+        }
+
+        code { font-size: 0.9rem !important; }
+
+        .token-comment { color: #6a737d; font-style: italic; }
+        .token-keyword { color: #ff7b72; }
+        .token-function { color: #d2a8ff; }
+
+        /* Table Styling */
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin: 1.5rem 0;
+            font-size: 0.9rem;
+        }
+        th {
+            text-align: left;
+            padding: 12px;
+            border-bottom: 1px solid var(--slate-border);
+            color: #888;
+            font-weight: 500;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+        }
+        td {
+            padding: 12px;
+            border-bottom: 1px solid var(--slate-border);
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in { animation: fadeIn 0.8s ease forwards; }
+
+        .grid-bg {
+            background-image: radial-gradient(#1d1d21 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+
+        blockquote {
+            border-left: 1px solid #333;
+            padding-left: 1.5rem;
+            margin: 1.5rem 0;
+            font-style: italic;
+            color: #a1a1aa;
+        }
+    </style>
+</head>
+<body class="grid-bg">
+
+    <!-- Subtle Header/Nav -->
+    <nav class="fixed top-0 w-full z-50 border-bottom border-[#1d1d21] bg-[#0a0a0c]/80 backdrop-blur-md border-b border-white/5">
+        <div class="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></div>
+                <span class="mono text-sm font-medium tracking-tight">assignment_v1.0.cpp</span>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-5xl mx-auto px-6 pt-32 pb-24">
+        
+        <!-- Hero Section -->
+        <header class="mb-20 fade-in">
+            <h1 class="text-4xl md:text-6xl font-bold mb-6 tracking-tighter">Data Structures & <br><span class="text-zinc-500">Algorithms Solutions.</span></h1>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-12">
+                <div class="glass-card p-6">
+                    <span class="section-tag mb-2 block">Student</span>
+                    <p class="text-white font-medium">M.Ali Zubair</p>
+                </div>
+                <div class="glass-card p-6 md:col-span-2">
+                    <span class="section-tag mb-2 block">Student Id</span>
+                    <p class="text-zinc-500 text-sm mono">S2025376052</p>
+                </div>
+            </div>
+        </header>
+
+        <!-- TOC -->
+        <section class="mb-24 fade-in" style="animation-delay: 0.2s">
+            <div class="glass-card p-8 bg-zinc-900/20">
+                <h3 class="text-sm font-bold uppercase tracking-widest mb-6 text-zinc-500">Index</h3>
+                <nav class="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-12">
+                    <a href="#question-1" class="group flex justify-between items-center border-b border-zinc-800 pb-2 hover:border-blue-500 transition-all">
+                        <span class="text-zinc-400 group-hover:text-white">01. Arrays & Memory</span>
+                        <span class="mono text-xs text-zinc-600">O(1)</span>
+                    </a>
+                    <a href="#question-2" class="group flex justify-between items-center border-b border-zinc-800 pb-2 hover:border-blue-500 transition-all">
+                        <span class="text-zinc-400 group-hover:text-white">02. Sorting Algorithms</span>
+                        <span class="mono text-xs text-zinc-600">O(n²)</span>
+                    </a>
+                    <a href="#question-3" class="group flex justify-between items-center border-b border-zinc-800 pb-2 hover:border-blue-500 transition-all">
+                        <span class="text-zinc-400 group-hover:text-white">03. Searching Algorithms</span>
+                        <span class="mono text-xs text-zinc-600">O(log n)</span>
+                    </a>
+                    <a href="#question-4" class="group flex justify-between items-center border-b border-zinc-800 pb-2 hover:border-blue-500 transition-all">
+                        <span class="text-zinc-400 group-hover:text-white">04. Algorithm Analysis</span>
+                        <span class="mono text-xs text-zinc-600">Ω(f(n))</span>
+                    </a>
+                    <a href="#question-5" class="group flex justify-between items-center border-b border-zinc-800 pb-2 hover:border-blue-500 transition-all">
+                        <span class="text-zinc-400 group-hover:text-white">05. Linked Lists</span>
+                        <span class="mono text-xs text-zinc-600">O(n)</span>
+                    </a>
+                    <a href="#complete-program" class="group flex justify-between items-center border-b border-zinc-800 pb-2 hover:border-blue-500 transition-all">
+                        <span class="text-zinc-400 group-hover:text-white">06. Source Code</span>
+                        <span class="mono text-xs text-zinc-600">.cpp</span>
+                    </a>
+                </nav>
+            </div>
+        </section>
+
+        <!-- Question 1 -->
+        <section id="question-1" class="mb-24 space-y-8">
+            <div class="flex items-center space-x-4">
+                <span class="text-blue-500 mono font-bold">01</span>
+                <h2 class="text-2xl font-bold uppercase tracking-tight">Arrays and Memory Management</h2>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="glass-card p-6">
+                    <h4 class="text-white font-semibold mb-3">Q1.A.1 — Contiguous Memory</h4>
+                    <p class="text-zinc-400 text-sm leading-relaxed">Contiguous memory means data is stored in one single block. Arrays use it so they can find elements quickly. Then we can access any index instantly.</p>
+                </div>
+                <div class="glass-card p-6">
+                    <h4 class="text-white font-semibold mb-3">Q1.A.2 — Memory Leaks</h4>
+                    <p class="text-zinc-400 text-sm leading-relaxed">A memory leak happens when we take memory from the system but don't give it back. Like when we use <code class="text-blue-400">new</code> for a dynamic array and forget to use <code class="text-blue-400">delete[]</code>.</p>
+                </div>
+            </div>
+
+            <div class="glass-card p-8">
+                <h4 class="text-white font-semibold mb-4">Implementation — Linear Search</h4>
+                <pre class="p-4 rounded-lg"><code class="mono text-zinc-300"><span class="token-comment">// Linear Search — O(n) time complexity</span>
+<span class="token-keyword">int</span> <span class="token-function">linSrch</span>(<span class="token-keyword">int</span> arr[], <span class="token-keyword">int</span> size, <span class="token-keyword">int</span> key) {
+    <span class="token-keyword">for</span> (<span class="token-keyword">int</span> i = <span class="token-number">0</span>; i < size; i++) {
+        <span class="token-keyword">if</span> (arr[i] == key) {
+            <span class="token-keyword">return</span> i;
+        }
+    }
+    <span class="token-keyword">return</span> -<span class="token-number">1</span>;
+}</code></pre>
+            </div>
+        </section>
+
+        <!-- Question 2 -->
+        <section id="question-2" class="mb-24 space-y-8">
+            <div class="flex items-center space-x-4">
+                <span class="text-blue-500 mono font-bold">02</span>
+                <h2 class="text-2xl font-bold uppercase tracking-tight">Sorting Algorithms</h2>
+            </div>
+
+            <div class="overflow-x-auto glass-card p-6">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Case</th>
+                            <th>Complexity</th>
+                            <th>Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="text-white">Best Case</td>
+                            <td class="mono text-blue-400">O(n)</td>
+                            <td class="text-zinc-500">Optimized flag stops after one pass</td>
+                        </tr>
+                        <tr>
+                            <td class="text-white">Average Case</td>
+                            <td class="mono text-blue-400">O(n²)</td>
+                            <td class="text-zinc-500">Random input order</td>
+                        </tr>
+                        <tr>
+                            <td class="text-white">Worst Case</td>
+                            <td class="mono text-blue-400">O(n²)</td>
+                            <td class="text-zinc-500">Reverse order input</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <blockquote>
+                Selection Sort is usually better because it does fewer swaps. Bubble Sort might be chosen if the array is already mostly sorted.
+            </blockquote>
+        </section>
+
+        <!-- Question 3 -->
+        <section id="question-3" class="mb-24 space-y-8">
+            <div class="flex items-center space-x-4">
+                <span class="text-blue-500 mono font-bold">03</span>
+                <h2 class="text-2xl font-bold uppercase tracking-tight">Searching Algorithms</h2>
+            </div>
+            
+            <div class="glass-card p-8">
+                <h4 class="text-white font-semibold mb-6">Binary Search Walkthrough (Key = 23)</h4>
+                <div class="space-y-4">
+                    <div class="flex items-center space-x-4 text-sm border-l-2 border-zinc-800 pl-4 hover:border-blue-500 transition-all">
+                        <span class="text-zinc-500 mono">Step 1:</span>
+                        <p class="text-zinc-300">low:0, high:7, mid:3 | arr[3]=12. <span class="text-blue-400">12 < 23</span>, set low = 4</p>
+                    </div>
+                    <div class="flex items-center space-x-4 text-sm border-l-2 border-zinc-800 pl-4 hover:border-blue-500 transition-all">
+                        <span class="text-zinc-500 mono">Step 2:</span>
+                        <p class="text-zinc-300">low:4, high:7, mid:5 | arr[5]=23. <span class="text-green-400 font-bold">Match found</span> at index 5</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Question 4 -->
+        <section id="question-4" class="mb-24 space-y-8">
+            <div class="flex items-center space-x-4">
+                <span class="text-blue-500 mono font-bold">04</span>
+                <h2 class="text-2xl font-bold uppercase tracking-tight">Algorithm Analysis</h2>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                <div class="space-y-6">
+                    <div>
+                        <h4 class="section-tag mb-2">Growth Rate</h4>
+                        <p class="mono text-lg text-white">O(1) < O(log n) < O(n) < O(n log n) < O(n²)</p>
+                    </div>
+                    <div>
+                        <h4 class="section-tag mb-2">Efficiency</h4>
+                        <p class="text-zinc-400 text-sm italic">"No, because for very large n, O(n log n) will always be faster than O(n²) no matter how fast the computer is."</p>
+                    </div>
+                </div>
+                <div class="glass-card p-6 bg-blue-500/5 border-blue-500/20">
+                    <h4 class="text-blue-400 font-bold mb-2">Space Complexity</h4>
+                    <p class="text-zinc-300 text-sm">Space complexity is how much extra memory we need. If we make an array of size n, it is <code class="text-blue-300">O(n)</code>.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Question 5 -->
+        <section id="question-5" class="mb-24 space-y-8">
+            <div class="flex items-center space-x-4">
+                <span class="text-blue-500 mono font-bold">05</span>
+                <h2 class="text-2xl font-bold uppercase tracking-tight">Linked Lists</h2>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="glass-card p-6 border-zinc-800">
+                    <span class="mono text-xs text-zinc-600 mb-2 block">Insert Head</span>
+                    <span class="text-2xl font-bold text-white">O(1)</span>
+                </div>
+                <div class="glass-card p-6 border-zinc-800">
+                    <span class="mono text-xs text-zinc-600 mb-2 block">Insert Tail</span>
+                    <span class="text-2xl font-bold text-white">O(n)</span>
+                </div>
+                <div class="glass-card p-6 border-zinc-800">
+                    <span class="mono text-xs text-zinc-600 mb-2 block">Delete Val</span>
+                    <span class="text-2xl font-bold text-white">O(n)</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Final Code Block -->
+        <section id="complete-program" class="mb-24">
+            <div class="flex items-center justify-between mb-8">
+                <div class="flex items-center space-x-4">
+                    <span class="text-blue-500 mono font-bold">06</span>
+                    <h2 class="text-2xl font-bold uppercase tracking-tight">Complete Program</h2>
+                </div>
+                <button onclick="copyCode()" class="mono text-xs bg-zinc-800 hover:bg-zinc-700 text-zinc-300 px-4 py-2 rounded transition-colors">COPY_TO_CLIPBOARD</button>
+            </div>
+            
+            <div class="rounded-xl overflow-hidden border border-zinc-800 shadow-2xl">
+                <div class="bg-zinc-900 px-4 py-2 flex items-center space-x-2 border-b border-zinc-800">
+                    <div class="w-3 h-3 rounded-full bg-red-500/20"></div>
+                    <div class="w-3 h-3 rounded-full bg-yellow-500/20"></div>
+                    <div class="w-3 h-3 rounded-full bg-green-500/20"></div>
+                    <span class="text-xs text-zinc-500 ml-4 mono">main.cpp</span>
+                </div>
+                <pre id="main-code" class="p-6 text-sm leading-relaxed overflow-x-auto max-h-[600px]"><code class="mono text-zinc-400">
+#include &lt;iostream&gt;
+using namespace std;
+
+// Node structure for a singly linked list
+struct Node {
+    int data;
+    Node* next;
+};
+
+class LinkedList {
+public:
+    Node* head;
+    LinkedList() { head = nullptr; }
+
+    void insertAtHead(int val) {
+        Node* newNode = new Node();
+        newNode->data = val;
+        newNode->next = head;
+        head = newNode;
+    }
+
+    void display() {
+        Node* temp = head;
+        while (temp != nullptr) {
+            cout << temp->data << " -> ";
+            temp = temp->next;
+        }
+        cout << "NULL" << endl;
+    }
+};
+
+int main() {
+    // Demo Execution
+    LinkedList list;
+    list.insertAtHead(10);
+    list.insertAtHead(20);
+    list.display();
+    return 0;
+}
+                </code></pre>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="border-t border-zinc-900 py-12 bg-black/40">
+        <div class="max-w-5xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center text-zinc-600 text-xs mono">
+            <p>© 2025 M.Ali Zubair | DATA_STRUCTURES_ASSIGNMENT</p>
+            <div class="flex space-x-8 mt-4 md:mt-0 uppercase tracking-widest">
+                <span>Compiled with C++17</span>
+                <span>Optimized O(n)</span>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function copyCode() {
+            const code = document.getElementById('main-code').innerText;
+            const el = document.createElement('textarea');
+            el.value = code;
+            document.body.appendChild(el);
+            el.select();
+            document.execCommand('copy');
+            document.body.removeChild(el);
+            
+            const btn = event.target;
+            btn.innerText = 'COPIED!';
+            setTimeout(() => { btn.innerText = 'COPY_TO_CLIPBOARD'; }, 2000);
+        }
+
+        // Smooth reveal on scroll logic (Simplified Intersection Observer)
+        const observerOptions = { threshold: 0.1 };
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('fade-in');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('section').forEach(section => {
+            section.style.opacity = '0';
+            observer.observe(section);
+        });
+    </script>
+</body>
+</html>
