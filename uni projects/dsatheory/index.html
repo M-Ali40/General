@@ -1,347 +1,1120 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DSA Assignment | M.Ali Zubair</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Data Structures & Algorithms — Assignment Solutions</title>
+    
+    <!-- Typography -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/framer-motion@10.16.4/dist/framer-motion.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- Prism.js for C++ Syntax Highlighting -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+
     <style>
         :root {
-            --deep-ink: #0a0a0c;
-            --slate-border: #1d1d21;
-            --accent-blue: #3b82f6;
-            --glass: rgba(255, 255, 255, 0.03);
+            /* Deep Ink Palette */
+            --bg-base: #06070a;
+            --bg-surface: #0e1116;
+            --bg-surface-hover: #151921;
+            --glass-bg: rgba(14, 17, 22, 0.65);
+            
+            /* Typography Colors */
+            --text-primary: #ededed;
+            --text-secondary: #8a8f98;
+            --text-muted: #525866;
+            
+            /* Accents */
+            --accent-glow: #38bdf8;
+            --accent-primary: #818cf8;
+            --border-subtle: rgba(255, 255, 255, 0.08);
+            --border-strong: rgba(255, 255, 255, 0.15);
+            
+            /* Typography */
+            --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            --font-mono: 'JetBrains Mono', 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
 
         body {
-            background-color: var(--deep-ink);
-            color: #d1d1d1;
-            font-family: 'Inter', sans-serif;
-            scroll-behavior: smooth;
+            background-color: var(--bg-base);
+            color: var(--text-primary);
+            font-family: var(--font-sans);
+            line-height: 1.7;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            overflow-x: hidden;
+            position: relative;
         }
 
-        .mono { font-family: 'JetBrains Mono', monospace; }
-
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: var(--deep-ink); }
-        ::-webkit-scrollbar-thumb { background: #2d2d35; border-radius: 10px; }
-
-        /* Glassmorphism & Depth */
-        .glass-card {
-            background: var(--glass);
-            border: 1px solid var(--slate-border);
-            backdrop-filter: blur(12px);
-            border-radius: 8px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        /* Ambient Background Mesh/Glow */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -20vh;
+            left: -10vw;
+            width: 70vw;
+            height: 70vh;
+            background: radial-gradient(circle, rgba(129, 140, 248, 0.08) 0%, transparent 60%);
+            border-radius: 50%;
+            z-index: -1;
+            pointer-events: none;
         }
 
-        .glass-card:hover {
-            border-color: #33333a;
-            background: rgba(255, 255, 255, 0.05);
-            transform: translateY(-2px);
+        body::after {
+            content: '';
+            position: fixed;
+            bottom: -20vh;
+            right: -10vw;
+            width: 60vw;
+            height: 60vh;
+            background: radial-gradient(circle, rgba(56, 189, 248, 0.05) 0%, transparent 60%);
+            border-radius: 50%;
+            z-index: -1;
+            pointer-events: none;
         }
 
-        /* Typography Refinements */
-        h1, h2, h3 { color: #ffffff; letter-spacing: -0.02em; }
+        /* Abstract Node Graphic */
+        .bg-graphic {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -2;
+            opacity: 0.2;
+            background-image: 
+                linear-gradient(var(--border-subtle) 1px, transparent 1px),
+                linear-gradient(90deg, var(--border-subtle) 1px, transparent 1px);
+            background-size: 40px 40px;
+            mask-image: linear-gradient(to bottom, black 10%, transparent 90%);
+            -webkit-mask-image: linear-gradient(to bottom, black 10%, transparent 90%);
+        }
+
+        /* Layout */
+        .layout-container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+            display: grid;
+            grid-template-columns: 260px 1fr;
+            gap: 4rem;
+            align-items: start;
+        }
+
+        @media (max-width: 1024px) {
+            .layout-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Sidebar / TOC */
+        aside {
+            position: sticky;
+            top: 4rem;
+            height: max-content;
+            max-height: calc(100vh - 8rem);
+            overflow-y: auto;
+            scrollbar-width: none;
+        }
         
-        .section-tag {
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            letter-spacing: 0.15em;
-            color: var(--accent-blue);
-            font-weight: 700;
+        aside::-webkit-scrollbar { display: none; }
+
+        .toc-glass {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
         }
 
-        /* Syntax Highlighting Vibe */
-        pre {
-            background: #000000 !important;
-            border-left: 2px solid var(--accent-blue);
+        .toc-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .toc-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .toc-link {
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            transition: all 0.2s ease;
+            display: block;
+            padding: 0.35rem 0.5rem;
+            border-radius: 6px;
+            border-left: 2px solid transparent;
+        }
+
+        .toc-link:hover {
+            color: var(--text-primary);
+            background: var(--bg-surface-hover);
+            border-left-color: var(--text-secondary);
+        }
+
+        .toc-link.active {
+            color: var(--accent-glow);
+            background: rgba(56, 189, 248, 0.05);
+            border-left-color: var(--accent-glow);
+            font-weight: 500;
+        }
+
+        /* Main Content Typography & Elements */
+        main {
+            min-width: 0; /* Prevents flex/grid blowouts */
+            padding-bottom: 10rem;
+        }
+
+        h1, h2, h3, h4 {
+            color: var(--text-primary);
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            margin-top: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            line-height: 1.2;
+            margin-top: 0;
+            margin-bottom: 2rem;
+            background: linear-gradient(to right, #fff, #9ca3af);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        h2 {
+            font-size: 1.75rem;
+            border-bottom: 1px solid var(--border-subtle);
+            padding-bottom: 0.75rem;
+            padding-top: 2rem;
+        }
+
+        h3 {
+            font-size: 1.25rem;
+            color: #d1d5db;
+        }
+
+        p {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+
+        /* Student Info Card (Replacing the raw markdown table) */
+        .student-info {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            padding: 1.5rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 4rem;
+        }
+        
+        .student-info div {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .student-info span:first-child {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            margin-bottom: 0.25rem;
+        }
+
+        .student-info span:last-child {
+            font-size: 1.125rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            font-family: var(--font-mono);
+        }
+
+        /* Blockquotes (Answers) */
+        blockquote {
+            background: rgba(129, 140, 248, 0.03);
+            border: 1px solid var(--border-subtle);
+            border-left: 3px solid var(--accent-primary);
+            border-radius: 0 8px 8px 0;
+            padding: 1.25rem 1.5rem;
+            margin: 1.5rem 0 2.5rem 0;
+            position: relative;
+        }
+
+        blockquote p {
+            margin-bottom: 0;
+            color: #d1d5db;
+        }
+        
+        blockquote p + p {
+            margin-top: 1rem;
+        }
+
+        /* Tables */
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+            margin: 2rem 0;
+            border: 1px solid var(--border-subtle);
+            border-radius: 10px;
+            background: var(--bg-surface);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        th, td {
+            padding: 1rem 1.25rem;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        th {
+            background: rgba(255,255,255,0.02);
+            font-weight: 500;
+            color: var(--text-primary);
+            font-size: 0.875rem;
+            letter-spacing: 0.02em;
+        }
+
+        td {
+            color: var(--text-secondary);
+            font-size: 0.9375rem;
+        }
+        
+        td:nth-child(2) {
+            font-family: var(--font-mono);
+            color: var(--accent-glow);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover td {
+            background: rgba(255,255,255,0.01);
+        }
+
+        /* Code Blocks - Terminal Aesthetic */
+        .code-window {
+            background: #0d1117;
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            margin: 2rem 0;
+            overflow: hidden;
+            box-shadow: 0 10px 30px -10px rgba(0,0,0,0.5);
+        }
+
+        .code-header {
+            background: rgba(255,255,255,0.02);
+            border-bottom: 1px solid var(--border-subtle);
+            padding: 0.75rem 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .mac-dots {
+            display: flex;
+            gap: 6px;
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--text-muted);
+            opacity: 0.5;
+        }
+
+        .code-lang {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        .copy-btn {
+            background: transparent;
+            border: 1px solid var(--border-subtle);
+            color: var(--text-secondary);
+            border-radius: 6px;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: var(--font-sans);
+        }
+
+        .copy-btn:hover {
+            background: var(--bg-surface-hover);
+            color: var(--text-primary);
+        }
+
+        pre[class*="language-"] {
+            margin: 0 !important;
+            padding: 1.5rem !important;
+            background: transparent !important;
+            font-family: var(--font-mono) !important;
+            font-size: 0.875rem !important;
+            line-height: 1.6 !important;
             overflow-x: auto;
         }
 
-        code { font-size: 0.9rem !important; }
-
-        .token-comment { color: #6a737d; font-style: italic; }
-        .token-keyword { color: #ff7b72; }
-        .token-function { color: #d2a8ff; }
-
-        /* Table Styling */
-        table {
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 0;
-            margin: 1.5rem 0;
-            font-size: 0.9rem;
+        /* Custom Prism Theme overrides for Deep Ink aesthetic */
+        code[class*="language-"], pre[class*="language-"] {
+            color: #e2e8f0 !important;
+            text-shadow: none !important;
         }
-        th {
-            text-align: left;
-            padding: 12px;
-            border-bottom: 1px solid var(--slate-border);
-            color: #888;
-            font-weight: 500;
-            text-transform: uppercase;
-            font-size: 0.75rem;
-        }
-        td {
-            padding: 12px;
-            border-bottom: 1px solid var(--slate-border);
+        .token.comment, .token.prolog, .token.doctype, .token.cdata { color: #64748b !important; font-style: italic; }
+        .token.punctuation { color: #94a3b8 !important; }
+        .token.namespace { opacity: .7 !important; }
+        .token.property, .token.tag, .token.boolean, .token.number, .token.constant, .token.symbol, .token.deleted { color: #f472b6 !important; }
+        .token.selector, .token.attr-name, .token.string, .token.char, .token.builtin, .token.inserted { color: #a7f3d0 !important; }
+        .token.operator, .token.entity, .token.url, .language-css .token.string, .style .token.string { color: #38bdf8 !important; }
+        .token.atrule, .token.attr-value, .token.keyword { color: #818cf8 !important; }
+        .token.function, .token.class-name { color: #fbbf24 !important; }
+        .token.regex, .token.important, .token.variable { color: #f87171 !important; }
+
+        /* Inline code */
+        p code {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 0.15rem 0.35rem;
+            border-radius: 4px;
+            font-family: var(--font-mono);
+            font-size: 0.85em;
+            color: var(--accent-glow);
+            border: 1px solid var(--border-subtle);
         }
 
-        /* Animations */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+        /* Section Reveal Animation */
+        .reveal {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        .fade-in { animation: fadeIn 0.8s ease forwards; }
-
-        .grid-bg {
-            background-image: radial-gradient(#1d1d21 1px, transparent 1px);
-            background-size: 40px 40px;
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
         }
-
-        blockquote {
-            border-left: 1px solid #333;
-            padding-left: 1.5rem;
-            margin: 1.5rem 0;
-            font-style: italic;
-            color: #a1a1aa;
+        
+        hr {
+            border: 0;
+            height: 1px;
+            background: var(--border-strong);
+            margin: 4rem 0;
         }
     </style>
 </head>
-<body class="grid-bg">
+<body>
 
-    <!-- Subtle Header/Nav -->
-    <nav class="fixed top-0 w-full z-50 border-bottom border-[#1d1d21] bg-[#0a0a0c]/80 backdrop-blur-md border-b border-white/5">
-        <div class="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
-            <div class="flex items-center space-x-3">
-                <div class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></div>
-                <span class="mono text-sm font-medium tracking-tight">assignment_v1.0.cpp</span>
-            </div>
-        </div>
-    </nav>
+    <div class="bg-graphic"></div>
 
-    <main class="max-w-5xl mx-auto px-6 pt-32 pb-24">
+    <div class="layout-container">
         
-        <!-- Hero Section -->
-        <header class="mb-20 fade-in">
-            <h1 class="text-4xl md:text-6xl font-bold mb-6 tracking-tighter">Data Structures & <br><span class="text-zinc-500">Algorithms Solutions.</span></h1>
-            
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-12">
-                <div class="glass-card p-6">
-                    <span class="section-tag mb-2 block">Student</span>
-                    <p class="text-white font-medium">M.Ali Zubair</p>
-                </div>
-                <div class="glass-card p-6 md:col-span-2">
-                    <span class="section-tag mb-2 block">Student Id</span>
-                    <p class="text-zinc-500 text-sm mono">S2025376052</p>
-                </div>
-            </div>
-        </header>
+        <!-- Sidebar Navigation -->
+        <aside class="reveal">
+            <nav class="toc-glass">
+                <div class="toc-title">Table of Contents</div>
+                <ul class="toc-list" id="toc-list">
+                    <li><a href="#question-1" class="toc-link">1. Arrays and Memory</a></li>
+                    <li><a href="#question-2" class="toc-link">2. Sorting Algorithms</a></li>
+                    <li><a href="#question-3" class="toc-link">3. Searching Algorithms</a></li>
+                    <li><a href="#question-4" class="toc-link">4. Algorithm Analysis</a></li>
+                    <li><a href="#question-5" class="toc-link">5. Linked Lists</a></li>
+                    <li><a href="#complete-program" class="toc-link">6. Complete Program</a></li>
+                </ul>
+            </nav>
+        </aside>
 
-        <!-- TOC -->
-        <section class="mb-24 fade-in" style="animation-delay: 0.2s">
-            <div class="glass-card p-8 bg-zinc-900/20">
-                <h3 class="text-sm font-bold uppercase tracking-widest mb-6 text-zinc-500">Index</h3>
-                <nav class="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-12">
-                    <a href="#question-1" class="group flex justify-between items-center border-b border-zinc-800 pb-2 hover:border-blue-500 transition-all">
-                        <span class="text-zinc-400 group-hover:text-white">01. Arrays & Memory</span>
-                        <span class="mono text-xs text-zinc-600">O(1)</span>
-                    </a>
-                    <a href="#question-2" class="group flex justify-between items-center border-b border-zinc-800 pb-2 hover:border-blue-500 transition-all">
-                        <span class="text-zinc-400 group-hover:text-white">02. Sorting Algorithms</span>
-                        <span class="mono text-xs text-zinc-600">O(n²)</span>
-                    </a>
-                    <a href="#question-3" class="group flex justify-between items-center border-b border-zinc-800 pb-2 hover:border-blue-500 transition-all">
-                        <span class="text-zinc-400 group-hover:text-white">03. Searching Algorithms</span>
-                        <span class="mono text-xs text-zinc-600">O(log n)</span>
-                    </a>
-                    <a href="#question-4" class="group flex justify-between items-center border-b border-zinc-800 pb-2 hover:border-blue-500 transition-all">
-                        <span class="text-zinc-400 group-hover:text-white">04. Algorithm Analysis</span>
-                        <span class="mono text-xs text-zinc-600">Ω(f(n))</span>
-                    </a>
-                    <a href="#question-5" class="group flex justify-between items-center border-b border-zinc-800 pb-2 hover:border-blue-500 transition-all">
-                        <span class="text-zinc-400 group-hover:text-white">05. Linked Lists</span>
-                        <span class="mono text-xs text-zinc-600">O(n)</span>
-                    </a>
-                    <a href="#complete-program" class="group flex justify-between items-center border-b border-zinc-800 pb-2 hover:border-blue-500 transition-all">
-                        <span class="text-zinc-400 group-hover:text-white">06. Source Code</span>
-                        <span class="mono text-xs text-zinc-600">.cpp</span>
-                    </a>
-                </nav>
-            </div>
-        </section>
-
-        <!-- Question 1 -->
-        <section id="question-1" class="mb-24 space-y-8">
-            <div class="flex items-center space-x-4">
-                <span class="text-blue-500 mono font-bold">01</span>
-                <h2 class="text-2xl font-bold uppercase tracking-tight">Arrays and Memory Management</h2>
-            </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="glass-card p-6">
-                    <h4 class="text-white font-semibold mb-3">Q1.A.1 — Contiguous Memory</h4>
-                    <p class="text-zinc-400 text-sm leading-relaxed">Contiguous memory means data is stored in one single block. Arrays use it so they can find elements quickly. Then we can access any index instantly.</p>
+        <!-- Main Content -->
+        <main>
+            <section class="reveal">
+                <h1>Data Structures & Algorithms <br><span style="color: var(--text-muted); font-size: 0.65em;">Assignment Solutions</span></h1>
+                
+                <div class="student-info">
+                    <div>
+                        <span>Student Name</span>
+                        <span>M.Ali Butt</span>
+                    </div>
+                    <div>
+                        <span>Student ID</span>
+                        <span>S2025376052</span>
+                    </div>
                 </div>
-                <div class="glass-card p-6">
-                    <h4 class="text-white font-semibold mb-3">Q1.A.2 — Memory Leaks</h4>
-                    <p class="text-zinc-400 text-sm leading-relaxed">A memory leak happens when we take memory from the system but don't give it back. Like when we use <code class="text-blue-400">new</code> for a dynamic array and forget to use <code class="text-blue-400">delete[]</code>.</p>
-                </div>
-            </div>
+            </section>
 
-            <div class="glass-card p-8">
-                <h4 class="text-white font-semibold mb-4">Implementation — Linear Search</h4>
-                <pre class="p-4 rounded-lg"><code class="mono text-zinc-300"><span class="token-comment">// Linear Search — O(n) time complexity</span>
-<span class="token-keyword">int</span> <span class="token-function">linSrch</span>(<span class="token-keyword">int</span> arr[], <span class="token-keyword">int</span> size, <span class="token-keyword">int</span> key) {
-    <span class="token-keyword">for</span> (<span class="token-keyword">int</span> i = <span class="token-number">0</span>; i < size; i++) {
-        <span class="token-keyword">if</span> (arr[i] == key) {
-            <span class="token-keyword">return</span> i;
+            <!-- Question 1 -->
+            <section id="question-1" class="reveal section-marker">
+                <h2>Question 1 — Arrays and Memory Management</h2>
+                
+                <h3>Q1.A.1 — Contiguous Memory</h3>
+                <blockquote>
+                    <p>Contiguous memory means data is stored in one single block. Arrays use it so they can find elements quickly. Then we can access any index instantly.</p>
+                </blockquote>
+
+                <h3>Q1.A.2 — Memory Leaks</h3>
+                <blockquote>
+                    <p>A memory leak happens when we take memory from the system but don't give it back. Like when we use <code>new</code> for a dynamic array and forget to use <code>delete[]</code>.</p>
+                </blockquote>
+
+                <h3>Q1.A.3 — Static vs. Dynamic Arrays</h3>
+                <blockquote>
+                    <p>Static arrays have a fixed size when we write the code. Dynamic arrays can change size while the program is running. Fixed size matters because if we run out of space, we can't add more things.</p>
+                </blockquote>
+
+                <h3>Q1.A.4 — O(1) Array Access</h3>
+                <blockquote>
+                    <p>Array access is O(1) because the computer knows exactly where each element is. In a Linked List, we have to start from the head and follow pointers one by one.</p>
+                </blockquote>
+
+                <h3>Implementation — Linear Search & Max/Min</h3>
+                <div class="code-window">
+                    <div class="code-header">
+                        <div class="mac-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+                        <span class="code-lang">Linear Search (C++)</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+<pre><code class="language-cpp">// Linear Search — O(n) time complexity
+int linSrch(int arr[], int size, int key) {
+    for (int i = 0; i < size; i++) {
+        if (arr[i] == key) {
+            return i;
         }
     }
-    <span class="token-keyword">return</span> -<span class="token-number">1</span>;
+    return -1;
 }</code></pre>
-            </div>
-        </section>
+                </div>
 
-        <!-- Question 2 -->
-        <section id="question-2" class="mb-24 space-y-8">
-            <div class="flex items-center space-x-4">
-                <span class="text-blue-500 mono font-bold">02</span>
-                <h2 class="text-2xl font-bold uppercase tracking-tight">Sorting Algorithms</h2>
-            </div>
-
-            <div class="overflow-x-auto glass-card p-6">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Case</th>
-                            <th>Complexity</th>
-                            <th>Notes</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td class="text-white">Best Case</td>
-                            <td class="mono text-blue-400">O(n)</td>
-                            <td class="text-zinc-500">Optimized flag stops after one pass</td>
-                        </tr>
-                        <tr>
-                            <td class="text-white">Average Case</td>
-                            <td class="mono text-blue-400">O(n²)</td>
-                            <td class="text-zinc-500">Random input order</td>
-                        </tr>
-                        <tr>
-                            <td class="text-white">Worst Case</td>
-                            <td class="mono text-blue-400">O(n²)</td>
-                            <td class="text-zinc-500">Reverse order input</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <blockquote>
-                Selection Sort is usually better because it does fewer swaps. Bubble Sort might be chosen if the array is already mostly sorted.
-            </blockquote>
-        </section>
-
-        <!-- Question 3 -->
-        <section id="question-3" class="mb-24 space-y-8">
-            <div class="flex items-center space-x-4">
-                <span class="text-blue-500 mono font-bold">03</span>
-                <h2 class="text-2xl font-bold uppercase tracking-tight">Searching Algorithms</h2>
-            </div>
-            
-            <div class="glass-card p-8">
-                <h4 class="text-white font-semibold mb-6">Binary Search Walkthrough (Key = 23)</h4>
-                <div class="space-y-4">
-                    <div class="flex items-center space-x-4 text-sm border-l-2 border-zinc-800 pl-4 hover:border-blue-500 transition-all">
-                        <span class="text-zinc-500 mono">Step 1:</span>
-                        <p class="text-zinc-300">low:0, high:7, mid:3 | arr[3]=12. <span class="text-blue-400">12 < 23</span>, set low = 4</p>
+                <div class="code-window">
+                    <div class="code-header">
+                        <div class="mac-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+                        <span class="code-lang">Max/Min Traversal (C++)</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
                     </div>
-                    <div class="flex items-center space-x-4 text-sm border-l-2 border-zinc-800 pl-4 hover:border-blue-500 transition-all">
-                        <span class="text-zinc-500 mono">Step 2:</span>
-                        <p class="text-zinc-300">low:4, high:7, mid:5 | arr[5]=23. <span class="text-green-400 font-bold">Match found</span> at index 5</p>
-                    </div>
+<pre><code class="language-cpp">// Find Max and Min in a single traversal — O(n) time complexity
+void findMaxMin(int arr[], int size) {
+    int maxVal = arr[0];
+    int minVal = arr[0];
+    for (int i = 1; i < size; i++) {
+        if (arr[i] > maxVal) {
+            maxVal = arr[i];
+        }
+        if (arr[i] < minVal) {
+            minVal = arr[i];
+        }
+    }
+    cout << "Maximum: " << maxVal << endl;
+    cout << "Minimum: " << minVal << endl;
+}</code></pre>
                 </div>
-            </div>
-        </section>
+            </section>
 
-        <!-- Question 4 -->
-        <section id="question-4" class="mb-24 space-y-8">
-            <div class="flex items-center space-x-4">
-                <span class="text-blue-500 mono font-bold">04</span>
-                <h2 class="text-2xl font-bold uppercase tracking-tight">Algorithm Analysis</h2>
-            </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
-                <div class="space-y-6">
-                    <div>
-                        <h4 class="section-tag mb-2">Growth Rate</h4>
-                        <p class="mono text-lg text-white">O(1) < O(log n) < O(n) < O(n log n) < O(n²)</p>
-                    </div>
-                    <div>
-                        <h4 class="section-tag mb-2">Efficiency</h4>
-                        <p class="text-zinc-400 text-sm italic">"No, because for very large n, O(n log n) will always be faster than O(n²) no matter how fast the computer is."</p>
-                    </div>
-                </div>
-                <div class="glass-card p-6 bg-blue-500/5 border-blue-500/20">
-                    <h4 class="text-blue-400 font-bold mb-2">Space Complexity</h4>
-                    <p class="text-zinc-300 text-sm">Space complexity is how much extra memory we need. If we make an array of size n, it is <code class="text-blue-300">O(n)</code>.</p>
-                </div>
-            </div>
-        </section>
+            <!-- Question 2 -->
+            <section id="question-2" class="reveal section-marker">
+                <h2>Question 2 — Sorting Algorithms</h2>
+                
+                <h3>Q2.A.1 — Bubble Sort Mechanism</h3>
+                <blockquote>
+                    <p>Bubble Sort compares two side-by-side numbers and swaps them if needed. In each pass, the largest number "bubbles up" to the end.</p>
+                </blockquote>
 
-        <!-- Question 5 -->
-        <section id="question-5" class="mb-24 space-y-8">
-            <div class="flex items-center space-x-4">
-                <span class="text-blue-500 mono font-bold">05</span>
-                <h2 class="text-2xl font-bold uppercase tracking-tight">Linked Lists</h2>
-            </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="glass-card p-6 border-zinc-800">
-                    <span class="mono text-xs text-zinc-600 mb-2 block">Insert Head</span>
-                    <span class="text-2xl font-bold text-white">O(1)</span>
+                <h3>Q2.A.2 — Bubble Sort Complexity</h3>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Case</th>
+                                <th>Time Complexity</th>
+                                <th>Notes</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Best Case</td>
+                                <td>O(n)</td>
+                                <td>Array already sorted; optimization flag stops after one pass</td>
+                            </tr>
+                            <tr>
+                                <td>Average Case</td>
+                                <td>O(n²)</td>
+                                <td>Random input order</td>
+                            </tr>
+                            <tr>
+                                <td>Worst Case</td>
+                                <td>O(n²)</td>
+                                <td>Array sorted in reverse order</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
-                <div class="glass-card p-6 border-zinc-800">
-                    <span class="mono text-xs text-zinc-600 mb-2 block">Insert Tail</span>
-                    <span class="text-2xl font-bold text-white">O(n)</span>
-                </div>
-                <div class="glass-card p-6 border-zinc-800">
-                    <span class="mono text-xs text-zinc-600 mb-2 block">Delete Val</span>
-                    <span class="text-2xl font-bold text-white">O(n)</span>
-                </div>
-            </div>
-        </section>
+                <blockquote>
+                    <p>If the array is sorted and we use an optimization flag, it stops after one pass.</p>
+                </blockquote>
 
-        <!-- Final Code Block -->
-        <section id="complete-program" class="mb-24">
-            <div class="flex items-center justify-between mb-8">
-                <div class="flex items-center space-x-4">
-                    <span class="text-blue-500 mono font-bold">06</span>
-                    <h2 class="text-2xl font-bold uppercase tracking-tight">Complete Program</h2>
+                <h3>Q2.A.3 — Bubble Sort vs. Selection Sort</h3>
+                <blockquote>
+                    <p>Selection Sort is usually better because it does fewer swaps. Bubble Sort might be chosen if the array is already mostly sorted.</p>
+                </blockquote>
+
+                <h3>Implementation — Optimized Bubble Sort</h3>
+                <div class="code-window">
+                    <div class="code-header">
+                        <div class="mac-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+                        <span class="code-lang">Bubble Sort (C++)</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+<pre><code class="language-cpp">// Bubble Sort with early termination optimization
+// Returns the total number of swaps performed
+int bubSrt(int arr[], int n) {
+    int swaps = 0;
+    for (int i = 0; i < n - 1; i++) {
+        bool swapped = false;
+        for (int j = 0; j < n - i - 1; j++) {
+            if (arr[j] > arr[j + 1]) {
+                int temp = arr[j];
+                arr[j] = arr[j + 1];
+                arr[j + 1] = temp;
+                swaps++;
+                swapped = true;
+            }
+        }
+        
+        cout << "Pass " << i + 1 << ": ";
+        for (int k = 0; k < n; k++) cout << arr[k] << " ";
+        cout << endl;
+
+        if (!swapped) break;  // Array is sorted — early exit
+    }
+    return swaps;
+}</code></pre>
                 </div>
-                <button onclick="copyCode()" class="mono text-xs bg-zinc-800 hover:bg-zinc-700 text-zinc-300 px-4 py-2 rounded transition-colors">COPY_TO_CLIPBOARD</button>
-            </div>
-            
-            <div class="rounded-xl overflow-hidden border border-zinc-800 shadow-2xl">
-                <div class="bg-zinc-900 px-4 py-2 flex items-center space-x-2 border-b border-zinc-800">
-                    <div class="w-3 h-3 rounded-full bg-red-500/20"></div>
-                    <div class="w-3 h-3 rounded-full bg-yellow-500/20"></div>
-                    <div class="w-3 h-3 rounded-full bg-green-500/20"></div>
-                    <span class="text-xs text-zinc-500 ml-4 mono">main.cpp</span>
+            </section>
+
+            <!-- Question 3 -->
+            <section id="question-3" class="reveal section-marker">
+                <h2>Question 3 — Searching Algorithms</h2>
+                
+                <h3>Q3.A.1 — Binary Search Prerequisite</h3>
+                <blockquote>
+                    <p>The array must be sorted first for Binary Search to work.</p>
+                </blockquote>
+
+                <h3>Q3.A.2 — Binary Search Walkthrough</h3>
+                <blockquote>
+                    <p><strong>Target:</strong> Key = 23 on array <code>{2, 5, 8, 12, 16, 23, 38, 45}</code></p>
+                    <div class="table-container" style="margin: 1rem 0 0 0; background: rgba(0,0,0,0.2);">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Step</th>
+                                    <th>low</th>
+                                    <th>high</th>
+                                    <th>mid</th>
+                                    <th>arr[mid]</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>1</td>
+                                    <td>0</td>
+                                    <td>7</td>
+                                    <td>3</td>
+                                    <td>12</td>
+                                    <td>12 < 23, so low = 4</td>
+                                </tr>
+                                <tr>
+                                    <td>2</td>
+                                    <td>4</td>
+                                    <td>7</td>
+                                    <td>5</td>
+                                    <td>23</td>
+                                    <td>Found at index 5</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </blockquote>
+
+                <h3>Q3.A.3 — Binary Search vs. Linear Search</h3>
+                <blockquote>
+                    <p>Binary Search is O(log n) and Linear Search is O(n). Binary Search cuts the work in half every time, so it's much faster.</p>
+                </blockquote>
+
+                <h3>Implementation — Binary Search with Iteration Tracking</h3>
+                <div class="code-window">
+                    <div class="code-header">
+                        <div class="mac-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+                        <span class="code-lang">Binary Search (C++)</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+<pre><code class="language-cpp">// Binary Search — O(log n) time complexity
+// Tracks the number of iterations for performance analysis
+int binSrch(int arr[], int size, int key, int &iterations) {
+    int low = 0;
+    int high = size - 1;
+    iterations = 0;
+
+    while (low <= high) {
+        iterations++;
+        int mid = low + (high - low) / 2;  // Prevents integer overflow
+        if (arr[mid] == key) {
+            return mid;
+        }
+        if (arr[mid] < key) {
+            low = mid + 1;
+        } else {
+            high = mid - 1;
+        }
+    }
+    return -1;  // Key not found
+}</code></pre>
                 </div>
-                <pre id="main-code" class="p-6 text-sm leading-relaxed overflow-x-auto max-h-[600px]"><code class="mono text-zinc-400">
-#include &lt;iostream&gt;
+            </section>
+
+            <!-- Question 4 -->
+            <section id="question-4" class="reveal section-marker">
+                <h2>Question 4 — Algorithm Analysis</h2>
+                
+                <h3>Q4.A.1 — Big O Notation</h3>
+                <blockquote>
+                    <p>Big O describes how the time grows as input size (n) gets bigger. We don't use seconds because different computers have different speeds.</p>
+                </blockquote>
+
+                <h3>Q4.A.2 — Asymptotic Notations</h3>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Notation</th>
+                                <th>Name</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>O(f(n))</strong></td>
+                                <td>Big O</td>
+                                <td>Worst-case upper bound (longest time)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Ω(f(n))</strong></td>
+                                <td>Big Omega</td>
+                                <td>Best-case lower bound (shortest time)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Θ(f(n))</strong></td>
+                                <td>Big Theta</td>
+                                <td>Tight bound — average case when O and Ω coincide</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h3>Q4.A.3 — Growth Rate Hierarchy</h3>
+                <div class="code-window" style="background: rgba(255,255,255,0.02); border-color: rgba(255,255,255,0.05); margin: 1rem 0;">
+<pre><code class="language-plaintext" style="color: var(--accent-glow) !important; text-align: center; font-size: 1.1em !important;">O(1) &lt; O(log n) &lt; O(n) &lt; O(n log n) &lt; O(n²)</code></pre>
+                </div>
+
+                <h3>Q4.A.4 — Space Complexity</h3>
+                <blockquote>
+                    <p>Space complexity is how much extra memory we need. If we make an array of size n, it is O(n).</p>
+                </blockquote>
+
+                <h3>Q4.A.5 — Asymptotic Dominance</h3>
+                <blockquote>
+                    <p>No, because for very large n, O(n log n) will always be faster than O(n²) no matter how fast the computer is.</p>
+                </blockquote>
+
+                <h3>Implementation — Complexity Examples</h3>
+                
+                <p><strong>O(n²) — Quadratic Time:</strong></p>
+                <div class="code-window">
+<pre><code class="language-cpp">// Nested loops produce O(n²) time complexity
+void nestedLoop(int n) {
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            // some work
+        }
+    }
+}</code></pre>
+                </div>
+
+                <p><strong>O(n) — Linear Time:</strong></p>
+                <div class="code-window">
+<pre><code class="language-cpp">// Single loop produces O(n) time complexity
+void singleLoop(int n) {
+    for (int i = 0; i < n; i++) {
+        // some work
+    }
+}</code></pre>
+                </div>
+
+                <p><strong>O(n²) Search with Optimization Strategy:</strong></p>
+                <div class="code-window">
+<pre><code class="language-cpp">// Naive O(n²) approach — checking each element of A in B
+bool checkElements(int A[], int B[], int n) {
+    for (int i = 0; i < n; i++) {
+        bool found = false;
+        for (int j = 0; j < n; j++) {
+            if (A[i] == B[j]) {
+                found = true;
+                break;
+            }
+        }
+        if (!found) return false;
+    }
+    return true;
+}</code></pre>
+                </div>
+                <blockquote>
+                    <p><strong>Optimization:</strong> Sort B first (O(n log n)), then use Binary Search for each element of A (O(log n) each). Total: <strong>O(n log n)</strong>.</p>
+                </blockquote>
+            </section>
+
+            <!-- Question 5 -->
+            <section id="question-5" class="reveal section-marker">
+                <h2>Question 5 — Linked Lists</h2>
+                
+                <h3>Q5.A.1 — Linked List vs. Array</h3>
+                <blockquote>
+                    <p>A Linked List is a chain of nodes where each node points to the next one. Arrays are one big block, but Linked List nodes can be anywhere.</p>
+                </blockquote>
+
+                <h3>Q5.A.2 — Linked List Operations</h3>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Operation</th>
+                                <th>Time Complexity</th>
+                                <th>Notes</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Insertion at head</td>
+                                <td>O(1)</td>
+                                <td>Direct pointer manipulation</td>
+                            </tr>
+                            <tr>
+                                <td>Insertion at tail</td>
+                                <td>O(n)</td>
+                                <td>Must traverse to the end</td>
+                            </tr>
+                            <tr>
+                                <td>Deletion by value</td>
+                                <td>O(n)</td>
+                                <td>Search required before deletion</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h3>Q5.A.3 — Memory Management in Linked Lists</h3>
+                <blockquote>
+                    <p>If we don't use <code>delete</code>, we get a "Memory Leak". To avoid it, always use <code>delete</code> when removing a node.</p>
+                </blockquote>
+
+                <h3>Implementation — Singly Linked List</h3>
+                <div class="code-window">
+                    <div class="code-header">
+                        <div class="mac-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+                        <span class="code-lang">Node Struct (C++)</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+<pre><code class="language-cpp">// Node structure for a singly linked list
+struct Node {
+    int data;
+    Node* next;
+};</code></pre>
+                </div>
+
+                <div class="code-window">
+                    <div class="code-header">
+                        <div class="mac-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+                        <span class="code-lang">LinkedList Class (C++)</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+<pre><code class="language-cpp">// Linked List class with core operations
+class LinkedList {
+public:
+    Node* head;
+    
+    LinkedList() {
+        head = nullptr;
+    }
+
+    // Insert at beginning — O(1)
+    void insertAtHead(int val) {
+        Node* newNode = new Node();
+        newNode->data = val;
+        newNode->next = head;
+        head = newNode;
+    }
+
+    // Insert at end — O(n)
+    void insertAtTail(int val) {
+        Node* newNode = new Node();
+        newNode->data = val;
+        newNode->next = nullptr;
+        if (head == nullptr) {
+            head = newNode;
+            return;
+        }
+        Node* temp = head;
+        while (temp->next != nullptr) {
+            temp = temp->next;
+        }
+        temp->next = newNode;
+    }
+
+    // Display the list — O(n)
+    void display() {
+        Node* temp = head;
+        while (temp != nullptr) {
+            cout << temp->data << " -> ";
+            temp = temp->next;
+        }
+        cout << "NULL" << endl;
+    }
+
+    // Delete first node matching value — O(n)
+    void delByVal(int val) {
+        if (head == nullptr) return;
+        if (head->data == val) {
+            Node* temp = head;
+            head = head->next;
+            delete temp;
+            return;
+        }
+        Node* curr = head;
+        Node* prev = nullptr;
+        while (curr != nullptr && curr->data != val) {
+            prev = curr;
+            curr = curr->next;
+        }
+        if (curr == nullptr) return;
+        prev->next = curr->next;
+        delete curr;
+    }
+};</code></pre>
+                </div>
+            </section>
+
+            <!-- Complete Program -->
+            <section id="complete-program" class="reveal section-marker">
+                <h2>Complete Program</h2>
+                <div class="code-window">
+                    <div class="code-header">
+                        <div class="mac-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+                        <span class="code-lang">Main.cpp (C++)</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+<pre><code class="language-cpp">#include &lt;iostream&gt;
 using namespace std;
 
-// Node structure for a singly linked list
+/*
+Q1.A.1: Contiguous memory means data is stored in one single block.
+Arrays use it so they can find elements quickly.
+The advantage is that we can access any index instantly.
+
+Q1.A.2: A memory leak happens when we take memory from the system but don't give it back.
+Like when we use 'new' for a dynamic array and forget to use 'delete[]'.
+
+Q1.A.3: Static arrays have a fixed size when we write the code.
+Dynamic arrays can change size while the program is running.
+Fixed size matters because if we run out of space, we can't add more things.
+
+Q1.A.4: Array access is O(1) because the computer knows exactly where each element is.
+In a Linked List, we have to start from the head and follow pointers one by one.
+*/
+
+// Linear Search function
+int linSrch(int arr[], int size, int key) {
+    for (int i = 0; i < size; i++) {
+        if (arr[i] == key) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+// Find Max and Min in one loop
+void findMaxMin(int arr[], int size) {
+    int maxVal = arr[0];
+    int minVal = arr[0];
+    for (int i = 1; i < size; i++) {
+        if (arr[i] > maxVal) {
+            maxVal = arr[i];
+        }
+        if (arr[i] < minVal) {
+            minVal = arr[i];
+        }
+    }
+    cout << "Maximum: " << maxVal << endl;
+    cout << "Minimum: " << minVal << endl;
+}
+
+/*
+Q2.A.1: Bubble Sort compares two side-by-side numbers and swaps them if needed.
+In each pass, the largest number "bubbles up" to the end.
+
+Q2.A.2:
+Best case: O(n) (if already sorted and we use a flag).
+Average and Worst case: O(n^2).
+If the array is sorted and we use an optimization flag, it stops after one pass.
+
+Q2.A.3: Selection Sort is usually better because it does fewer swaps.
+Bubble Sort might be chosen if the array is already mostly sorted.
+*/
+
+// Bubble Sort with optimization
+int bubSrt(int arr[], int n) {
+    int swaps = 0;
+    for (int i = 0; i < n - 1; i++) {
+        bool swapped = false;
+        for (int j = 0; j < n - i - 1; j++) {
+            if (arr[j] > arr[j + 1]) {
+                int temp = arr[j];
+                arr[j] = arr[j + 1];
+                arr[j + 1] = temp;
+                swaps++;
+                swapped = true;
+            }
+        }
+        
+        cout << "Pass " << i + 1 << ": ";
+        for (int k = 0; k < n; k++) cout << arr[k] << " ";
+        cout << endl;
+
+        if (!swapped) break;
+    }
+    return swaps;
+}
+
+/*
+Q3.A.1: The array must be sorted first for Binary Search to work.
+
+Q3.A.2: Key = 23 on {2, 5, 8, 12, 16, 23, 38, 45}
+1. low=0, high=7, mid=3. arr[3]=12. 12 < 23, low = 4.
+2. low=4, high=7, mid=5. arr[5]=23. Found at index 5.
+
+Q3.A.3: Binary Search is O(log n) and Linear Search is O(n).
+Binary Search cuts the work in half every time, so it's much faster.
+*/
+
+// Binary Search with iteration count
+int binSrch(int arr[], int size, int key, int &iterations) {
+    int low = 0;
+    int high = size - 1;
+    iterations = 0;
+
+    while (low <= high) {
+        iterations++;
+        int mid = low + (high - low) / 2;
+        if (arr[mid] == key) {
+            return mid;
+        }
+        if (arr[mid] < key) {
+            low = mid + 1;
+        } else {
+            high = mid - 1;
+        }
+    }
+    return -1;
+}
+
+/*
+Q4.A.1: Big O describes how the time grows as input size (n) gets bigger.
+We don't use seconds because different computers have different speeds.
+
+Q4.A.2:
+Big O: Worst case (longest time).
+Big Omega: Best case (shortest time).
+Big Theta: Average case (tight bound).
+
+Q4.A.3: O(1) < O(log n) < O(n) < O(n log n) < O(n^2)
+
+Q4.A.4: Space complexity is how much extra memory we need.
+If we make an array of size n, it is O(n).
+
+Q4.A.5: No, because for very large n, O(n log n) will always be faster than O(n^2)
+no matter how fast the computer is.
+*/
+
+// O(n^2) function
+void nestedLoop(int n) {
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            // some work
+        }
+    }
+}
+
+// O(n) function
+void singleLoop(int n) {
+    for (int i = 0; i < n; i++) {
+        // some work
+    }
+}
+
+// O(n^2) search function
+bool checkElements(int A[], int B[], int n) {
+    for (int i = 0; i < n; i++) {
+        bool found = false;
+        for (int j = 0; j < n; j++) {
+            if (A[i] == B[j]) {
+                found = true;
+                break;
+            }
+        }
+        if (!found) return false;
+    }
+    return true;
+}
+// Better way: Sort B first (O(n log n)), then use Binary Search for each A (O(log n)).
+
+/*
+Q5.A.1: A Linked List is a chain of nodes where each node points to the next one.
+Arrays are one big block, but Linked List nodes can be anywhere.
+
+Q5.A.2:
+- Insertion at head: O(1).
+- Insertion at tail: O(n).
+- Deletion by value: O(n).
+
+Q5.A.3: If we don't use delete, we get a "Memory Leak".
+To avoid it, always use delete when removing a node.
+*/
+
 struct Node {
     int data;
     Node* next;
@@ -350,13 +1123,30 @@ struct Node {
 class LinkedList {
 public:
     Node* head;
-    LinkedList() { head = nullptr; }
+    LinkedList() {
+        head = nullptr;
+    }
 
     void insertAtHead(int val) {
         Node* newNode = new Node();
         newNode->data = val;
         newNode->next = head;
         head = newNode;
+    }
+
+    void insertAtTail(int val) {
+        Node* newNode = new Node();
+        newNode->data = val;
+        newNode->next = nullptr;
+        if (head == nullptr) {
+            head = newNode;
+            return;
+        }
+        Node* temp = head;
+        while (temp->next != nullptr) {
+            temp = temp->next;
+        }
+        temp->next = newNode;
     }
 
     void display() {
@@ -367,62 +1157,140 @@ public:
         }
         cout << "NULL" << endl;
     }
+
+    void delByVal(int val) {
+        if (head == nullptr) return;
+        if (head->data == val) {
+            Node* temp = head;
+            head = head->next;
+            delete temp;
+            return;
+        }
+        Node* curr = head;
+        Node* prev = nullptr;
+        while (curr != nullptr && curr->data != val) {
+            prev = curr;
+            curr = curr->next;
+        }
+        if (curr == nullptr) return;
+        prev->next = curr->next;
+        delete curr;
+    }
 };
 
 int main() {
-    // Demo Execution
+    // Q1
+    int arr1[] = {4, 15, 7, 23, 1, 9, 42, 18, 6, 30};
+    int index = linSrch(arr1, 10, 42);
+    cout << "42 found at index: " << index << endl;
+    findMaxMin(arr1, 10);
+
+    // Q2
+    int arr2[] = {64, 34, 25, 12, 22, 11, 90};
+    int totalSwaps = bubSrt(arr2, 7);
+    cout << "Total swaps: " << totalSwaps << endl;
+
+    // Q3
+    int arr3[] = {2, 5, 8, 12, 16, 23, 38, 45, 56, 72};
+    int iterCount;
+    int bIndex = binSrch(arr3, 10, 56, iterCount);
+    cout << "Searching 56: Index " << bIndex << ", Iterations: " << iterCount << endl;
+    bIndex = binSrch(arr3, 10, 100, iterCount);
+    cout << "Searching 100: Index " << bIndex << ", Iterations: " << iterCount << endl;
+
+    // Q5
     LinkedList list;
     list.insertAtHead(10);
     list.insertAtHead(20);
+    list.insertAtTail(30);
+    list.insertAtTail(40);
+    list.insertAtTail(50);
     list.display();
+    list.delByVal(30);
+    list.delByVal(100);
+    list.display();
+
     return 0;
-}
-                </code></pre>
-            </div>
-        </section>
+}</code></pre>
+                </div>
+            </section>
 
-    </main>
+        </main>
+    </div>
 
-    <footer class="border-t border-zinc-900 py-12 bg-black/40">
-        <div class="max-w-5xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center text-zinc-600 text-xs mono">
-            <p>© 2025 M.Ali Zubair | DATA_STRUCTURES_ASSIGNMENT</p>
-            <div class="flex space-x-8 mt-4 md:mt-0 uppercase tracking-widest">
-                <span>Compiled with C++17</span>
-                <span>Optimized O(n)</span>
-            </div>
-        </div>
-    </footer>
-
+    <!-- Scripts for Interactions -->
     <script>
-        function copyCode() {
-            const code = document.getElementById('main-code').innerText;
-            const el = document.createElement('textarea');
-            el.value = code;
-            document.body.appendChild(el);
-            el.select();
-            document.execCommand('copy');
-            document.body.removeChild(el);
-            
-            const btn = event.target;
-            btn.innerText = 'COPIED!';
-            setTimeout(() => { btn.innerText = 'COPY_TO_CLIPBOARD'; }, 2000);
-        }
-
-        // Smooth reveal on scroll logic (Simplified Intersection Observer)
-        const observerOptions = { threshold: 0.1 };
-        const observer = new IntersectionObserver((entries) => {
+        // 1. Reveal Elements on Scroll
+        const revealElements = document.querySelectorAll('.reveal');
+        
+        const revealObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
-                    entry.target.classList.add('fade-in');
-                    observer.unobserve(entry.target);
+                    entry.target.classList.add('active');
                 }
             });
-        }, observerOptions);
+        }, { threshold: 0.1, rootMargin: "0px 0px -50px 0px" });
 
-        document.querySelectorAll('section').forEach(section => {
-            section.style.opacity = '0';
-            observer.observe(section);
+        revealElements.forEach(el => revealObserver.observe(el));
+        
+        // Ensure first elements trigger immediately
+        setTimeout(() => {
+            document.querySelectorAll('.reveal').forEach((el, index) => {
+                if (index < 2) el.classList.add('active');
+            });
+        }, 100);
+
+        // 2. Sticky TOC Highlight Active Section
+        const sections = document.querySelectorAll('.section-marker');
+        const navLinks = document.querySelectorAll('.toc-link');
+
+        const tocObserver = new IntersectionObserver((entries) => {
+            let current = '';
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    current = entry.target.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href').includes(current) && current !== '') {
+                    link.classList.add('active');
+                }
+            });
+        }, { threshold: 0.2, rootMargin: "-10% 0px -80% 0px" });
+
+        sections.forEach(section => {
+            tocObserver.observe(section);
         });
+
+        // 3. Copy Code Functionality
+        function copyCode(button) {
+            const pre = button.parentElement.nextElementSibling;
+            const code = pre.innerText;
+            
+            // Standard fallback clipboard approach
+            const textArea = document.createElement("textarea");
+            textArea.value = code;
+            document.body.appendChild(textArea);
+            textArea.select();
+            
+            try {
+                document.execCommand('copy');
+                const originalText = button.innerText;
+                button.innerText = 'Copied!';
+                button.style.color = '#a7f3d0';
+                
+                setTimeout(() => {
+                    button.innerText = originalText;
+                    button.style.color = 'var(--text-secondary)';
+                }, 2000);
+            } catch (err) {
+                console.error('Failed to copy', err);
+            }
+            
+            document.body.removeChild(textArea);
+        }
     </script>
 </body>
 </html>
